@@ -6,7 +6,7 @@ const HomeItems = props => (
   <React.Fragment>
     <Nav.ItemLink href="#/" active>
       Home
-      <BSpan srOnly>(current}</BSpan>
+      <BSpan srOnly>(current)</BSpan>
     </Nav.ItemLink>
     <Nav.ItemLink href="#/login">
       Login
