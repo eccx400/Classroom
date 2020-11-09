@@ -4,6 +4,8 @@ import { HashRouter, Route, Switch } from 'react-router-dom';
 import { Auth, Hub, Logger } from 'aws-amplify';
 import { SignOut } from 'aws-amplify-react';
 
+import { JSignOut } from './auth';
+
 const HomeItems = props => (
   <React.Fragment>
     <Nav.ItemLink href="#/" active>
@@ -76,7 +78,7 @@ export default class Navigator extends Component {
           <Navbar.Text mr="2">
             { user? 'Hi ' + user.username : 'Please Sign In' }
           </Navbar.Text>
-          { user && <SignOut /> }
+          { user && <JSignOut /> }
         </Navbar.Collapse>
       </Navbar>
     )
