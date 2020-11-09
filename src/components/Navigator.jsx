@@ -61,7 +61,7 @@ export default class Navigator extends Component {
 
     return (
       <Navbar expand="md" dark bg="dark" fixed="top">
-        <Navbar.Brand href="#">Journal</Navbar.Brand>
+        <Navbar.Brand href="#">Classroom</Navbar.Brand>
         <Navbar.Toggler target="#navbarsExampleDefault" />
 
         <Navbar.Collapse id="navbarsExampleDefault">
@@ -74,7 +74,7 @@ export default class Navigator extends Component {
             </HashRouter>
           </Navbar.Nav>
           <Navbar.Text mr="2">
-            { user? 'Hi ' + user.username : 'Please sign in' }
+            { user? 'Hi ' + user.username : 'Please Sign In' }
           </Navbar.Text>
           { user && <SignOut /> }
         </Navbar.Collapse>
