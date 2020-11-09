@@ -1,1 +1,10 @@
-{}
+{
+  "auth": {
+    "classroom2355393c": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}
