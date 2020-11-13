@@ -3,7 +3,7 @@ import { Container } from 'bootstrap-4-react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import { Auth, Hub, Logger } from 'aws-amplify';
 
-import { Home, Login } from '../pages';
+import { Home, Profile, Login } from '../pages';
 
 const logger = new Logger('Main');
 
@@ -45,6 +45,11 @@ export default class Main extends Component {
                 exact
                 path="/"
                 render={(props) => <Home user={user} />}
+              />
+              <Route
+                exact
+                path="/profile"
+                render={(props) => <Profile user={user} />}
               />
               <Route
                 exact
