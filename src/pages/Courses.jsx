@@ -47,82 +47,41 @@ const deleteNote = `mutation deleteNote($id: ID!){
     }
   }`;
 
-export const createCourse = /* GraphQL */ `
-  mutation CreateCourse(
-    $input: CreateCourseInput!
-    $condition: ModelCourseConditionInput
-  ) {
-    createCourse(input: $input, condition: $condition) {
-      id
-      title
-      professor
-      description
-      createdAt
-      updatedAt
-      owner
+const searchNote = `query searchNotes($search: String){
+    searchNotes(filter:{note:{match:$search}}){
+      items{
+        id
+        note
+      }
     }
-  }
-`;
-export const updateCourse = /* GraphQL */ `
-  mutation UpdateCourse(
-    $input: UpdateCourseInput!
-    $condition: ModelCourseConditionInput
-  ) {
-    updateCourse(input: $input, condition: $condition) {
-      id
-      title
-      professor
-      description
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const deleteCourse = /* GraphQL */ `
-  mutation DeleteCourse(
-    $input: DeleteCourseInput!
-    $condition: ModelCourseConditionInput
-  ) {
-    deleteCourse(input: $input, condition: $condition) {
-      id
-      title
-      professor
-      description
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-
+  }`;
 export default class Courses extends Component {
   constructor(props) {
     super(props);
     this.state = {
       id: "",
       notes: [],
+      searchResults: [],
       value: "",
       displayAdd: true,
       displayUpdate: false,
+      displaySearch: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   async componentDidMount() {
-    console.log("In ComponentDidMount");
     const notes = await API.graphql(graphqlOperation(readNote));
     this.setState({ notes: notes.data.listNotes.items });
   }
 
   handleChange(event) {
-    console.log("In handle change");
     this.setState({ value: event.target.value });
   }
   async handleSubmit(event) {
-    console.log("In HandleSubmit");
     event.preventDefault();
     event.stopPropagation();
     const note = { note: this.state.value };
@@ -130,16 +89,12 @@ export default class Courses extends Component {
     this.listNotes();
     this.setState({ value: "" });
   }
-
   async handleDelete(id) {
-    console.log("In HandleDelete");
     const noteId = { id: id };
     await API.graphql(graphqlOperation(deleteNote, noteId));
     this.listNotes();
   }
-
   async handleUpdate(event) {
-    console.log("In HandleUpdate");
     event.preventDefault();
     event.stopPropagation();
     const note = { id: this.state.id, note: this.state.value };
@@ -147,9 +102,26 @@ export default class Courses extends Component {
     this.listNotes();
     this.setState({ displayAdd: true, displayUpdate: false, value: "" });
   }
-
+  async handleSearch(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const search = { search: this.state.value };
+    const result = await API.graphql(graphqlOperation(searchNote, search));
+    this.setState({
+      searchResults: result.data.searchNotes.items,
+      notes: [],
+      displaySearch: true,
+      value: "",
+    });
+    if (JSON.stringify(result.data.searchNotes.items) === "[]") {
+      this.setState({
+        searchResults: [
+          { note: "No Match: Clear the search to go back to your Notes" },
+        ],
+      });
+    }
+  }
   selectNote(note) {
-    console.log("In SelectNote");
     this.setState({
       id: note.id,
       value: note.note,
@@ -157,16 +129,18 @@ export default class Courses extends Component {
       displayUpdate: true,
     });
   }
-
   async listNotes() {
-    console.log("In ListNote");
     const notes = await API.graphql(graphqlOperation(readNote));
-    this.setState({ notes: notes.data.listNotes.items });
+    this.setState({
+      notes: notes.data.listNotes.items,
+      searchResults: [],
+      displaySearch: false,
+    });
   }
 
   render() {
     const data = [].concat(this.state.notes).map((item, i) => (
-      <div className="alert alert-primary alert-dismissible show" role="alert">
+      <div className="alert alert-primary show" role="alert">
         <span key={item.i} onClick={this.selectNote.bind(this, item)}>
           {item.note}
         </span>
@@ -182,11 +156,16 @@ export default class Courses extends Component {
         </button>
       </div>
     ));
+    const searchResults = [].concat(this.state.searchResults).map((item, i) => (
+      <div className="alert alert-success show" role="alert">
+        <span key={item.i}>{item.note}</span>
+      </div>
+    ));
     return (
       <div className="App">
         <div className="container">
           {this.state.displayAdd ? (
-            <form onSubmit={this.handleSubmit}>
+            <form>
               <div className="input-group mb-3">
                 <input
                   type="text"
@@ -198,8 +177,19 @@ export default class Courses extends Component {
                   onChange={this.handleChange}
                 />
                 <div className="input-group-append">
-                  <button className="btn btn-primary" type="submit">
+                  <button
+                    className="btn btn-primary border border-light"
+                    type="button"
+                    onClick={this.handleSubmit}
+                  >
                     Add Note
+                  </button>
+                  <button
+                    className="btn btn-primary border border-light"
+                    type="button"
+                    onClick={this.handleSearch}
+                  >
+                    Search
                   </button>
                 </div>
               </div>
@@ -227,7 +217,18 @@ export default class Courses extends Component {
           ) : null}
         </div>
         <br />
-        <div className="container">{data}</div>
+        <div className="container">
+          {searchResults}
+          {this.state.displaySearch ? (
+            <button
+              className="button btn-success float-right"
+              onClick={this.listNotes.bind(this)}
+            >
+              <span aria-hidden="true">Clear Search</span>
+            </button>
+          ) : null}
+          {data}
+        </div>
       </div>
     );
   }
