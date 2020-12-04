@@ -170,7 +170,7 @@ export default class Notes extends Component {
                 <input
                   type="text"
                   className="form-control form-control-lg"
-                  placeholder="New Note"
+                  placeholder="Student Name"
                   aria-label="Note"
                   aria-describedby="basic-addon2"
                   value={this.state.value}
@@ -182,7 +182,7 @@ export default class Notes extends Component {
                     type="button"
                     onClick={this.handleSubmit}
                   >
-                    Add Note
+                    Add Student
                   </button>
                   <button
                     className="btn btn-primary border border-light"

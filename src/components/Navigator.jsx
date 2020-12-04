@@ -19,6 +19,9 @@ const HomeItems = props => (
     <Nav.ItemLink href="#/courses">
       Courses
     </Nav.ItemLink>
+    <Nav.ItemLink href="#/notes">
+      Students
+    </Nav.ItemLink>
     <Nav.ItemLink href="#/login">
       Login
     </Nav.ItemLink>
@@ -35,6 +38,9 @@ const LoginItems = props => (
     </Nav.ItemLink>
     <Nav.ItemLink href="#/courses">
       Courses
+    </Nav.ItemLink>
+    <Nav.ItemLink href="#/notes">
+      Students
     </Nav.ItemLink>
     <Nav.ItemLink href="#/login" active>
       Login
@@ -55,6 +61,9 @@ const ProfileItems = props => (
     <Nav.ItemLink href="#/courses">
       Courses
     </Nav.ItemLink>
+    <Nav.ItemLink href="#/notes">
+      Students
+    </Nav.ItemLink>
     <Nav.ItemLink href="#/login">
       Login
     </Nav.ItemLink>
@@ -72,6 +81,30 @@ const CourseItems = props => (
     </Nav.ItemLink>    
     <Nav.ItemLink href="#/courses">
       Courses
+    </Nav.ItemLink>
+    <Nav.ItemLink href="#/notes">
+      Students
+    </Nav.ItemLink>
+    <Nav.ItemLink href="#/login">
+      Login
+    </Nav.ItemLink>
+  </React.Fragment>
+)
+
+const StudentItems = props => (
+  <React.Fragment>
+    <Nav.ItemLink href="#/" active>
+      Home
+      <BSpan srOnly>(current}</BSpan>
+    </Nav.ItemLink>
+    <Nav.ItemLink href="#/profile">
+      Profile
+    </Nav.ItemLink>    
+    <Nav.ItemLink href="#/courses">
+      Courses
+    </Nav.ItemLink>
+    <Nav.ItemLink href="#/notes">
+      Students
     </Nav.ItemLink>
     <Nav.ItemLink href="#/login">
       Login
@@ -120,6 +153,7 @@ export default class Navigator extends Component {
                 <Route exact path="/" component={HomeItems} />
                 <Route exact path="/profile" component={ProfileItems} />
                 <Route exact path="/courses" component={CourseItems} />
+                <Route exact path="/notes" component={StudentItems} />
                 <Route exact path="/login" component={LoginItems} />
               </Switch>
             </HashRouter>

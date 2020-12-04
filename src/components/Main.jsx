@@ -4,7 +4,7 @@ import { HashRouter, Route, Switch } from 'react-router-dom';
 import { Auth, Hub, Logger } from 'aws-amplify';
 
 import store from '../store';
-import { Home, Profile, Login, Courses } from '../pages';
+import { Home, Profile, Login, Courses, Notes } from '../pages';
 
 const logger = new Logger('Main');
 export default class Main extends Component {
@@ -54,7 +54,12 @@ export default class Main extends Component {
               />
               <Route
                 exact
-                path="/login"
+                path="/notes"
+                render={(props) => <Notes user={user} />}
+              />
+              <Route
+                exact
+                path="/notes"
                 render={(props) => <Login user={user} />}
               />
             </Switch>

@@ -6,63 +6,97 @@ import Amplify, { API, graphqlOperation } from "aws-amplify";
 import { withAuthenticator } from "aws-amplify-react";
 import awsExports from "../aws-exports";
 
-const createNote = `mutation createNote($note: String!){
-    createNote(input:{
-      note: $note
-    }){
+const createCourse = /* GraphQL */ `
+  mutation CreateCourse(
+    $title: String!
+    $professor: String!
+    $description: String!
+  }
+  ) {
+    createCourse(title: $title, professor: $professor, description: $description) {
       __typename
       id
-      note
+      title
+      professor
+      description
+      createdAt
+      updatedAt
+      owner
     }
-  }`;
+  }
+`;
 
-const readNote = `query listNotes{
-    listNotes{
-      items{
-        __typename
+const getAllCourses = /* GraphQL */ `
+  query ListCourses{
+      items {
         id
-        note
+        title
+        professor
+        description
       }
     }
-  }`;
+  }
+`;
 
-const updateNote = `mutation updateNote($id: ID!,$note: String){
-    updateNote(input:{
-      id: $id
-      note: $note
-    }){
+const updateCourse = /* GraphQL */ `
+  mutation UpdateCourse(
+    $id: ID!
+    $title: String!
+    $professor: String!
+    $description: String!
+  ) {
+    updateCourse(id: $id, title: $title, professor: $professor, description: $description) {
       __typename
       id
-      note
+      title
+      professor
+      description
     }
-  }`;
+  }
+`;
 
-const deleteNote = `mutation deleteNote($id: ID!){
-    deleteNote(input:{
-      id: $id
-    }){
+const deleteCourse = /* GraphQL */ `
+  mutation DeleteCourse(
+    $id: ID!
+  ) {
+    deleteCourse(id: $id) {
       __typename
       id
-      note
+      title
+      professor
+      description
     }
-  }`;
+  }
+`;
 
-const searchNote = `query searchNotes($search: String){
-    searchNotes(filter:{note:{match:$search}}){
-      items{
+const searchCourses = /* GraphQL */ `
+  query SearchCourses(
+    $search: String
+  ) {
+    searchCourses(
+      filter:{title:{match:$search}
+    ) {
+      items {
         id
-        note
+        title
+        professor
+        description
       }
     }
-  }`;
-export default class Notes extends Component {
+  }
+`;
+
+export default class Courses extends Component {
   constructor(props) {
     super(props);
     this.state = {
       id: "",
-      notes: [],
-      searchResults: [],
+      title: "",
+      professor: "",
+      description: "",
+      searchResult: "",
       value: "",
+      notes: [],
       displayAdd: true,
       displayUpdate: false,
       displaySearch: false,
@@ -74,7 +108,7 @@ export default class Notes extends Component {
   }
 
   async componentDidMount() {
-    const notes = await API.graphql(graphqlOperation(readNote));
+    const notes = await API.graphql(graphqlOperation(getAllCourses));
     this.setState({ notes: notes.data.listNotes.items });
   }
 
@@ -84,34 +118,32 @@ export default class Notes extends Component {
   async handleSubmit(event) {
     event.preventDefault();
     event.stopPropagation();
-    const note = { note: this.state.value };
-    await API.graphql(graphqlOperation(createNote, note));
-    this.listNotes();
+    await API.graphql(graphqlOperation(createCourse, {title: this.state.title, professor: this.state.professor, description: this.state.description }));
+    this.listCourses();
     this.setState({ value: "" });
   }
   async handleDelete(id) {
     const noteId = { id: id };
-    await API.graphql(graphqlOperation(deleteNote, noteId));
+    await API.graphql(graphqlOperation(deleteCourse, noteId));
     this.listNotes();
   }
   async handleUpdate(event) {
     event.preventDefault();
     event.stopPropagation();
-    const note = { id: this.state.id, note: this.state.value };
-    await API.graphql(graphqlOperation(updateNote, note));
-    this.listNotes();
+    await API.graphql(graphqlOperation(updateCourse, { id: this.state.id, title: this.state.title, professor: this.state.professor, description: this.state.description }));
+    this.listCourses();
     this.setState({ displayAdd: true, displayUpdate: false, value: "" });
   }
   async handleSearch(event) {
     event.preventDefault();
     event.stopPropagation();
-    const search = { search: this.state.value };
-    const result = await API.graphql(graphqlOperation(searchNote, search));
+    const search = { search: this.state.title };
+    const result = await API.graphql(graphqlOperation(searchCourses, search));
     this.setState({
       searchResults: result.data.searchNotes.items,
       notes: [],
       displaySearch: true,
-      value: "",
+      title: "",
     });
     if (JSON.stringify(result.data.searchNotes.items) === "[]") {
       this.setState({
@@ -124,13 +156,15 @@ export default class Notes extends Component {
   selectNote(note) {
     this.setState({
       id: note.id,
-      value: note.note,
+      title: note.title,
+      professor: note.professor,
+      description: note.description,
       displayAdd: false,
       displayUpdate: true,
     });
   }
   async listNotes() {
-    const notes = await API.graphql(graphqlOperation(readNote));
+    const notes = await API.graphql(graphqlOperation(getAllCourses));
     this.setState({
       notes: notes.data.listNotes.items,
       searchResults: [],
@@ -142,7 +176,7 @@ export default class Notes extends Component {
     const data = [].concat(this.state.notes).map((item, i) => (
       <div className="alert alert-primary show" role="alert">
         <span key={item.i} onClick={this.selectNote.bind(this, item)}>
-          {item.note}
+          {item.title, item.professor, item.description}
         </span>
         <button
           key={item.i}
@@ -158,7 +192,7 @@ export default class Notes extends Component {
     ));
     const searchResults = [].concat(this.state.searchResults).map((item, i) => (
       <div className="alert alert-success show" role="alert">
-        <span key={item.i}>{item.note}</span>
+        <span key={item.i}>{item.title, item.professor, item.description}</span>
       </div>
     ));
     return (
@@ -170,7 +204,7 @@ export default class Notes extends Component {
                 <input
                   type="text"
                   className="form-control form-control-lg"
-                  placeholder="New Note"
+                  placeholder="Add Courses"
                   aria-label="Note"
                   aria-describedby="basic-addon2"
                   value={this.state.value}
@@ -182,7 +216,7 @@ export default class Notes extends Component {
                     type="button"
                     onClick={this.handleSubmit}
                   >
-                    Add Note
+                    Add Courses
                   </button>
                   <button
                     className="btn btn-primary border border-light"
@@ -201,7 +235,7 @@ export default class Notes extends Component {
                 <input
                   type="text"
                   className="form-control form-control-lg"
-                  placeholder="Update Note"
+                  placeholder="Update Course"
                   aria-label="Note"
                   aria-describedby="basic-addon2"
                   value={this.state.value}
@@ -209,7 +243,7 @@ export default class Notes extends Component {
                 />
                 <div className="input-group-append">
                   <button className="btn btn-primary" type="submit">
-                    Update Note
+                    Update Course
                   </button>
                 </div>
               </div>

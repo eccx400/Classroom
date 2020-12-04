@@ -1,4 +1,4 @@
-type Note @model @auth(rules: [{allow: owner}]) @searchable {
+type Note @model @auth(rules: [{ allow: owner }]) @searchable {
   id: ID!
   note: String!
 }
@@ -7,12 +7,16 @@ type Course
   @model
   @auth(
     rules: [
-      {allow: owner, ownerField: "owner", operations: [create, update, delete]},
-    ])
-  @searchable
-  {
-    id: ID!
-    title: String!
-    professor: String!
-    description: String!
+      {
+        allow: owner
+        ownerField: "owner"
+        operations: [create, update, delete]
+      }
+    ]
+  )
+  @searchable {
+  id: ID!
+  title: String!
+  professor: String!
+  description: String!
 }
