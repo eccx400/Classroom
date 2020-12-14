@@ -1,0 +1,59 @@
+type S3Object {
+  bucket: String!
+  region: String!
+  key: String!
+}
+
+type Profile @model {
+  id: ID!
+  name: String!
+  accountType: String!
+  description: String!
+
+  # Refrence the S3Object  type from a field.
+  file: S3Object
+}
+
+type Students @model {
+  id: ID!
+  name: String
+  year: String
+  credits: String
+  courses: CourseByProf @connection
+  grade: String
+
+  # Refrence the S3Object  type from a field.
+  file: S3Object
+}
+
+type CourseByProf
+  @model
+  @auth(
+    rules: [
+      {
+        allow: groups
+        groups: ["Admin"]
+        queries: [get, list]
+        mutations: [create, update, delete]
+      }
+      {
+        allow: owner
+        queries: [get, list]
+        mutations: [create, update, delete]
+      }
+    ]
+  )
+  @searchable {
+  id: ID!
+
+  creator: String
+  category: String
+  coursename: String
+  coursedescription: String
+  studentsenrolled: String
+  labels: [String]
+  studentsincourse: Students @connection
+
+  # Refrence the S3Object  type from a field.
+  file: S3Object
+}

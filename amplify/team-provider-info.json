@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-classroomfinal-dev-00940-authRole",
+      "UnauthRoleArn": "arn:aws:iam::921060283878:role/amplify-classroomfinal-dev-00940-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::921060283878:role/amplify-classroomfinal-dev-00940-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-classroomfinal-dev-00940-deployment",
+      "UnauthRoleName": "amplify-classroomfinal-dev-00940-unauthRole",
+      "StackName": "amplify-classroomfinal-dev-00940",
+      "StackId": "arn:aws:cloudformation:us-east-2:921060283878:stack/amplify-classroomfinal-dev-00940/10a3ca60-3608-11eb-abdd-065e408dbd50",
+      "AmplifyAppId": "d3ivbp9thtwqj1"
+    },
+    "categories": {
+      "auth": {
+        "classroomfinal2108d1b3": {}
+      }
+    }
+  }
+}
