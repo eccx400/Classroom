@@ -1,5 +1,5 @@
 # Classroom
-> Demo can be found at [this link](https://prod2.d23zsehdxwo2wc.amplifyapp.com/)
+> Demo can be found at [this link](https://prod2.d23zsehdxwo2wc.amplifyapp.com/).
 
 ## Table of contents
 * [General info](#general-info)
