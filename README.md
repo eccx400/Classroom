@@ -1,5 +1,5 @@
 # Classroom
-> A Learning Management System that allows better communication between professors and students, where professors can better manage their classes and students are easily informed of any important notifications and class information</a>. 
+> Demo can be found at [this link](https://prod2.d23zsehdxwo2wc.amplifyapp.com/)
 
 ## Table of contents
 * [General info](#general-info)
